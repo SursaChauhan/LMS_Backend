@@ -14,7 +14,7 @@ app.use(express.json());
 app.get('/',(req,res)=>{
     res.send('Welcome to the LMS');
 })
-app.use('/auth', authRoutes);
+app.use('/api', authRoutes);
 app.use('/api', courseRoutes);
 app.use('/api', progressRoutes);
 
@@ -22,11 +22,8 @@ swaggerDocs(app);
 
 const PORT = process.env.PORT || 8080;
 
-mongoose.connect('mongodb+srv://surendra:singh123@cluster0.ztxomvh.mongodb.net/LmsAPi')
-// , {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true
-// });
+mongoose.connect('mongodb+srv://surendra:singh123@cluster0.ztxomvh.mongodb.net/LmsApi')
+
 
 const connectDB = mongoose.connection;
 

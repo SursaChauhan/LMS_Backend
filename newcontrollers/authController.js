@@ -10,6 +10,7 @@ exports.register = async (req, res) => {
     await user.save();
     res.status(201).json({ message: 'User registered successfully' });
 };
+const JWT_SECRET = process.env.JWT_SECRET || 'lms' ;
 
 exports.login = async (req, res) => {
     const { username, password } = req.body;
@@ -17,6 +18,6 @@ exports.login = async (req, res) => {
     if (!user) return res.status(400).json({ message: 'Invalid credentials' });
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) return res.status(400).json({ message: 'Invalid credentials' });
-    const token = jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_SECRET, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user._id, role: user.role }, JWT_SECRET, { expiresIn: '1h' });
     res.status(200).json({ token });
 };
