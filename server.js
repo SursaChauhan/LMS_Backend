@@ -22,11 +22,27 @@ swaggerDocs(app);
 
 const PORT = process.env.PORT || 8080;
 
-mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
-    .then(() => {
-        app.listen(PORT, () => {
-            console.log(`Server running on port ${PORT}`);
-        });
-    })
-    .catch(err => console.error(err));
+mongoose.connect('mongodb+srv://surendra:singh123@cluster0.ztxomvh.mongodb.net/LmsAPi')
+// , {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true
+// });
+
+const connectDB = mongoose.connection;
+
+// Event listeners to track the connection status
+connectDB.on('error', console.error.bind(console, 'MongoDB connection error:'));
+connectDB.once('open', () => {
+    console.log('MongoDB connected successfully!');
+});
+
+
+
+ app.listen(
+    PORT,
+    connectDB,
+    console.log(
+      `Server running in  mode on port ${PORT}`
+    )
+  );
     
