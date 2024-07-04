@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const cors = require('cors');
 const swaggerDocs = require('./config/swagger');
 const authRoutes = require('./newroutes/authRoutes');
 const courseRoutes = require('./newroutes/courseRoutes');
@@ -10,6 +11,7 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 app.get('/',(req,res)=>{
     res.send('Welcome to the LMS');
@@ -20,9 +22,9 @@ app.use('/api', progressRoutes);
 
 swaggerDocs(app);
 
-const PORT = process.env.PORT || 8080;
+const PORT =  8080;
 
-mongoose.connect('mongodb+srv://surendra:singh123@cluster0.ztxomvh.mongodb.net/LmsApi')
+mongoose.connect(process.env.MONGO_URL)
 
 
 const connectDB = mongoose.connection;

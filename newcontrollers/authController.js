@@ -4,17 +4,19 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 exports.register = async (req, res) => {
-    const { username, password, role } = req.body;
+    const { email,name, password, role } = req.body;
+    console.log(req.body);
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ username, password: hashedPassword, role });
+    const user = new User({ name,email, password: hashedPassword, role });
     await user.save();
-    res.status(201).json({ message: 'User registered successfully' });
+     res.status(201).json({ message: 'User registered successfully' });
+   
 };
-const JWT_SECRET = process.env.JWT_SECRET || 'lms' ;
+const JWT_SECRET = process.env.JWT_SECRET  ;
 
 exports.login = async (req, res) => {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: 'Invalid credentials' });
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) return res.status(400).json({ message: 'Invalid credentials' });

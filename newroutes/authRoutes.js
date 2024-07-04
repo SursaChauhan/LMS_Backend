@@ -62,8 +62,8 @@ const router = express.Router();
  */
 router.post(
     '/register',
-    [
-        check('username', 'Username is required').not().isEmpty(),
+    [check('name', 'name is required').not().isEmpty(),
+        check('email', 'email is required').not().isEmpty(),
         check('password', 'Password must be at least 6 characters').isLength({ min: 6 }),
         check('role', 'Role is required').isIn(['student', 'teacher']),
     ],
@@ -103,7 +103,7 @@ router.post(
 router.post(
     '/login',
     [
-        check('username', 'Username is required').not().isEmpty(),
+        check('email', 'email is required').not().isEmpty(),
         check('password', 'Password is required').not().isEmpty(),
     ],
     validate,
