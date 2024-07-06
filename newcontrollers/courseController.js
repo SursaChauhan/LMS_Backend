@@ -1,9 +1,12 @@
 // controllers/courseController.js
 const Course =require('../newmodels/Course')
+const Enrollment = require('../newmodels/Enrollment');
 
 exports.getCourses = async (req, res) => {
-    const courses = await Course.find().populate('teacher', 'username');
+console.log("getting courses")
+    const courses = await Course.find().populate('teacher', 'email');
     res.status(200).json(courses);
+
 };
 
 exports.getCourseById = async (req, res) => {
@@ -14,6 +17,7 @@ exports.getCourseById = async (req, res) => {
 
 exports.createCourse = async (req, res) => {
     const { title, description } = req.body;
+    console.log(req.user);
     const course = new Course({ title, description, teacher: req.user.userId });
     await course.save();
     res.status(201).json(course);
@@ -31,3 +35,17 @@ exports.deleteCourse = async (req, res) => {
     if (!course) return res.status(404).json({ message: 'Course not found' });
     res.status(200).json({ message: 'Course deleted successfully' });
 };
+
+
+//enroll students 
+exports.enrollStudent = async (req, res) => {
+    try {
+      const { studentId, courseId } = req.body;
+      const newEnrollment = new Enrollment({ student: studentId, course: courseId });
+      await newEnrollment.save();
+      res.status(201).json(newEnrollment);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Failed to enroll student' });
+    }
+  };
