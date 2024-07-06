@@ -16,7 +16,9 @@ exports.getCourseById = async (req, res) => {
 };
 
 exports.createCourse = async (req, res) => {
+
     const { title, description } = req.body;
+    console.log(req.body,"creating course")
     console.log(req.user);
     const course = new Course({ title, description, teacher: req.user.userId });
     await course.save();
@@ -25,6 +27,7 @@ exports.createCourse = async (req, res) => {
 
 exports.updateCourse = async (req, res) => {
     const { title, description } = req.body;
+    console.log(req.params.id,req.body)
     const course = await Course.findByIdAndUpdate(req.params.id, { title, description }, { new: true });
     if (!course) return res.status(404).json({ message: 'Course not found' });
     res.status(200).json(course);
