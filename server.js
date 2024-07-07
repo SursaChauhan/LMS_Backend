@@ -6,6 +6,7 @@ const swaggerDocs = require('./config/swagger');
 const authRoutes = require('./newroutes/authRoutes');
 const courseRoutes = require('./newroutes/courseRoutes');
 const progressRoutes = require('./newroutes/progressRoutes');
+const upload = require('./multer');
 
 dotenv.config();
 
@@ -19,6 +20,12 @@ app.get('/',(req,res)=>{
 app.use('/api', authRoutes);
 app.use('/api', courseRoutes);
 app.use('/api', progressRoutes);
+
+// app.post('/api/upload',upload.single('file'),(req,res)=>{
+//   console.log(req.body);
+//   console.log(req.file);
+
+// })
 
 swaggerDocs(app);
 

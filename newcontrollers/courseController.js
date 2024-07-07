@@ -1,10 +1,11 @@
-// controllers/courseController.js
+
 const Course =require('../newmodels/Course')
 const Enrollment = require('../newmodels/Enrollment');
+const multer = require('multer');
+const upload = require('../multer');
 
 exports.getCourses = async (req, res) => {
-//     console.log(req.query);
-// console.log("getting courses")
+
 const page = parseInt(req.query.page) //current page
 const limit = parseInt(req.query.limit) //number of items per page
 try{
@@ -13,7 +14,6 @@ try{
 
     const totalCourses = await Course.countDocuments();
     const totalPages = Math.ceil(totalCourses / limit)
-    console.log(courses,page,totalPages);
     res.status(200).json({courses,
         page,
         totalPages}
@@ -32,14 +32,27 @@ exports.getCourseById = async (req, res) => {
     res.status(200).json(course);
 };
 
+
+// const storage = multer.diskStorage({
+//     destination: function (req, file, cb) {
+//       cb(null, './uploads'); // Destination folder for file uploads
+//     },
+//     filename: function (req, file, cb) {
+//       cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
+//     }
+//   });
+  
+//   const upload = multer({ storage });
+
 exports.createCourse = async (req, res) => {
 
     const { title, description } = req.body;
-    console.log(req.body,"creating course")
+    console.log(req.body.file,"creating course")
     console.log(req.user);
-    const course = new Course({ title, description, teacher: req.user.userId });
-    await course.save();
-    res.status(201).json(course);
+    console.log(req.file);
+    // const course = new Course({ title, description, teacher: req.user.userId });
+    // await course.save();
+    // res.status(201).json(course);
 };
 
 exports.updateCourse = async (req, res) => {
