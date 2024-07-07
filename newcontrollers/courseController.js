@@ -33,26 +33,16 @@ exports.getCourseById = async (req, res) => {
 };
 
 
-// const storage = multer.diskStorage({
-//     destination: function (req, file, cb) {
-//       cb(null, './uploads'); // Destination folder for file uploads
-//     },
-//     filename: function (req, file, cb) {
-//       cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
-//     }
-//   });
-  
-//   const upload = multer({ storage });
 
 exports.createCourse = async (req, res) => {
 
     const { title, description } = req.body;
-    console.log(req.body.file,"creating course")
     console.log(req.user);
-    console.log(req.file);
-    // const course = new Course({ title, description, teacher: req.user.userId });
-    // await course.save();
-    // res.status(201).json(course);
+    console.log(req.file.path);
+    const file =req.file.path
+    const course = new Course({ title, description,file, teacher: req.user.userId });
+    await course.save();
+    res.status(201).json(course);
 };
 
 exports.updateCourse = async (req, res) => {
