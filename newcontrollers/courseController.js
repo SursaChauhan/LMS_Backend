@@ -3,9 +3,26 @@ const Course =require('../newmodels/Course')
 const Enrollment = require('../newmodels/Enrollment');
 
 exports.getCourses = async (req, res) => {
-console.log("getting courses")
-    const courses = await Course.find().populate('teacher', 'email');
-    res.status(200).json(courses);
+//     console.log(req.query);
+// console.log("getting courses")
+const page = parseInt(req.query.page) //current page
+const limit = parseInt(req.query.limit) //number of items per page
+try{
+    const skip = (page-1) * limit ;
+    const courses = await Course.find().populate('teacher', 'email').skip(skip).limit(limit);
+
+    const totalCourses = await Course.countDocuments();
+    const totalPages = Math.ceil(totalCourses / limit)
+    console.log(courses,page,totalPages);
+    res.status(200).json({courses,
+        page,
+        totalPages}
+    );
+}catch(error){
+    console.error(err);
+        res.status(500).json({ message: "Server error" });
+}
+  
 
 };
 
