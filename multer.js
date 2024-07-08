@@ -1,23 +1,5 @@
 const multer = require('multer');
 const path = require('path');
-// Multer setup for file uploads
-
-// const cloudinary = require('cloudinary').v2;
-
-// cloudinary.config({
-//     cloud_name: process.env.cloud_name,
-//     api_key: process.env.api_key,
-//     api_secret: process.env.api_secret
-//   });
-
-  // const storage = new CloudinaryStorage({
-  //   cloudinary: cloudinary,
-  //   params: {
-  //     folder: 'uploads', // Optional: specify a folder in Cloudinary
-  //     format: async (req, file) => 'jpg', // supports promises as well
-  //     public_id: (req, file) => file.originalname.split('.')[0], // Optional: specify the public ID
-  //   },
-  // });
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -29,5 +11,20 @@ const storage = multer.diskStorage({
   }
 });
 
-const upload = multer({ storage });
+
+const fileFilter = (req, file, cb) => {
+  const filetypes = /jpeg|jpg|png|gif|mp4|mov|avi/;
+  const mimetype = filetypes.test(file.mimetype);
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+
+  if (mimetype && extname) {
+    return cb(null, true);
+  } else {
+    cb(new Error('Error: File upload only supports the following filetypes - ' + filetypes));
+  }
+};
+
+const upload = multer({ storage,
+  fileFilter: fileFilter,
+ });
 module.exports = upload;
