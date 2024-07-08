@@ -8,7 +8,7 @@ const courseRoutes = require('./newroutes/courseRoutes');
 const progressRoutes = require('./newroutes/progressRoutes');
 const upload = require('./multer');
 
-dotenv.config();
+require('dotenv').config();
 
 const app = express();
 app.use(express.json());

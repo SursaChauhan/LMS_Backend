@@ -3,11 +3,11 @@ const Course =require('../newmodels/Course')
 const Enrollment = require('../newmodels/Enrollment');
 const multer = require('multer');
 const upload = require('../multer');
-
+const uploadOnCloudinary = require('../cloudinary')
 exports.getCourses = async (req, res) => {
 
-const page = parseInt(req.query.page) //current page
-const limit = parseInt(req.query.limit) //number of items per page
+const page = parseInt(req.query.page) || 1; //current page
+const limit = parseInt(req.query.limit) || 2;//number of items per page
 try{
     const skip = (page-1) * limit ;
     const courses = await Course.find().populate('teacher', 'email').skip(skip).limit(limit);
@@ -35,12 +35,21 @@ exports.getCourseById = async (req, res) => {
 
 
 exports.createCourse = async (req, res) => {
+ const filePath =req.file.path
+ console.log("from 39" ,typeof filePath);
+    const cloudinaryResult = await uploadOnCloudinary(filePath);
 
+    if (!cloudinaryResult) {
+      return res.status(500).json({ message: 'Failed to upload file to Cloudinary' });
+    }
+
+console.log(typeof cloudinaryResult.secure_url,cloudinaryResult.secure_url)
     const { title, description } = req.body;
-    console.log(req.user);
-    console.log(req.file.path);
-    const file =req.file.path
-    const course = new Course({ title, description,file, teacher: req.user.userId });
+    const ImageURl =cloudinaryResult.secure_url;
+    // console.log(req.user);
+    // console.log(req.file.path);
+   
+    const course = new Course({ title, description,ImageURl, teacher: req.user.userId });
     await course.save();
     res.status(201).json(course);
 };
