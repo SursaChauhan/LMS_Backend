@@ -1,9 +1,11 @@
 
 const Course = require('../newmodels/Course')
 const Enrollment = require('../newmodels/Enrollment');
+const Lecture =require('../newmodels/lecture')
 const multer = require('multer');
 const upload = require('../multer');
 const uploadOnCloudinary = require('../cloudinary');
+const mongoose =require('mongoose');
 
 
 exports.getCourses = async (req, res) => {
@@ -29,10 +31,21 @@ exports.getCourses = async (req, res) => {
 };
 
 exports.getCourseById = async (req, res) => {
-    const course = await Course.findById(req.params.id).populate('teacher', 'username');
-    if (!course) return res.status(404).json({ message: 'Course not found' });
-    res.status(200).json(course);
+    try {
+        const course = await Course.findById(req.params.id).populate('teacher', 'username');
+        if (!course) return res.status(404).json({ message: 'Course not found' });
+
+        const lectures = await Lecture.find({ course: req.params.id });
+        if (!lectures) return res.status(404).json({ message: 'This course do not have lectures yet' });
+        res.status(200).json({
+            course,
+            lectures
+        });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
 };
+
 
 
 
@@ -73,11 +86,33 @@ exports.deleteCourse = async (req, res) => {
 
 //enroll students 
 exports.enrollStudent = async (req, res) => {
+    console.log("req from req",req.query.courseID,req.user.userId);
     try {
-        const { studentId, courseId } = req.body;
+       const courseId = req.query.courseID;
+       const studentId = req.user.userId;
         const newEnrollment = new Enrollment({ student: studentId, course: courseId });
         await newEnrollment.save();
         res.status(201).json(newEnrollment);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to enroll student' });
+    }
+};
+
+exports.getEnrolledCourses = async (req, res) => {
+    // console.log("req from req",
+    //     req.query.courseID,
+    //     req.user,
+        
+    // );
+    try {
+       const studentId = req.user.userId;
+    //    const courseId = req.query.courseID;
+        const EnrollmentCourses = await Enrollment.find({ 
+             student: studentId,
+            //   course: courseId 
+        });
+        res.status(200).json(EnrollmentCourses);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Failed to enroll student' });

@@ -23,11 +23,7 @@ app.use('/api', courseRoutes);
 app.use('/api', progressRoutes);
 app.use('/api',lectureRoutes)
 
-// app.post('/api/upload',upload.single('file'),(req,res)=>{
-//   console.log(req.body);
-//   console.log(req.file);
 
-// })
 
 swaggerDocs(app);
 
