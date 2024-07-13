@@ -86,9 +86,9 @@ exports.deleteCourse = async (req, res) => {
 
 //enroll students 
 exports.enrollStudent = async (req, res) => {
-    console.log("req from req",req.query.courseID,req.user.userId);
+    console.log("req from req",req.params,req.user);
     try {
-       const courseId = req.query.courseID;
+       const courseId = req.params.id;
        const studentId = req.user.userId;
         const newEnrollment = new Enrollment({ student: studentId, course: courseId });
         await newEnrollment.save();
