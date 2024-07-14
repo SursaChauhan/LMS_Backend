@@ -23,11 +23,26 @@ const video = cloudinaryResult.secure_url;
 
 exports.getLectures =async(req,res)=>{
 
-    course = req.query.courseId;
-    console.log("from getLectures line 27",course);
+    const course = req.query.courseId;
+
+    console.log(course,"course");
+    // console.log("from getLectures line 27",course);
     const response =await Lecture.find({course});
     console.log("response of lecture line 29",response)
 
     res.status(200).json(response);
+    console.log("getting lectures")
 
 }
+
+// exports.getLecturesById =async(req,res)=>{
+
+//     course = req.query.courseId;
+//     console.log("courseid",course);
+//     // console.log("from getLectures line 27",course);
+//     // const response =await Lecture.find({course});
+//     // console.log("response of lecture line 29",response)
+
+//     // res.status(200).json(response);
+
+// }
