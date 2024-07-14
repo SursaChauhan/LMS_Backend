@@ -127,3 +127,54 @@ exports.getEnrolledCourses = async (req, res) => {
         sendErrorResponse(res, 500, 'Failed to get course');
     }
 };
+
+exports.OwnCourses = async (req, res) => {
+    const userId = req.user.userId;
+    try {
+        // Find all courses where the teacher is the current user
+        const courses = await Course.find({ teacher: userId });
+
+        if (!courses || courses.length === 0) {
+            return res.status(404).json({msg:"no course found"})
+        }
+
+        // Optionally populate additional fields like the teacher's username
+        const populatedCourses = await Course.find({ teacher: userId });
+        // .populate('teacher', 'username');
+
+        res.status(200).json({ populatedCourses });
+    } catch(error) {
+        console.error(error);
+        sendErrorResponse(res, 500, error.message);
+    }
+};
+
+exports.EnrolledCoursesByCourse = async (req, res) => {
+    try {
+        const courseId = req.params.id;
+        const EnrollmentCourses = await Enrollment.find({ course: courseId }).populate('course');
+
+        res.status(200).json(EnrollmentCourses);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ msg:"Failed to get course" });
+    }
+};
+
+exports.EnrolledCoursesByCourse = async (req, res) => {
+    const courseId = req.query.courseId;
+    console.log("courseID line 167",courseId);
+    try {
+ 
+        // Get the enrolled courses and count
+        const enrolledCourses = await Enrollment.find({ course: courseId }).populate('course');
+        const count = await Enrollment.countDocuments({ course: courseId });
+
+        // Return both enrolled courses and count
+        res.status(200).json({ enrolledCourses, count });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({msg:"Failed to get enrolled courses" });
+        
+    }
+};
