@@ -12,7 +12,15 @@ router.get('/coursecount',auth,courseController.EnrolledCoursesByCourse)
 router.get('/courses', auth, courseController.getCourses);
 router.post('/courses', auth, isTeacher,upload.single('file'), courseController.createCourse);
 // router.get('/courses/:id', auth, courseController.getCourseById);
-router.patch('/courses/:id', auth, isTeacher, courseController.updateCourse);
+// router.patch('/courses/:id', auth, isTeacher,upload.single('file'), courseController.updateCourse);
+router.patch('/courses/:id', auth, isTeacher, (req, res, next) => {
+    console.log("Auth and isTeacher middleware passed");
+    next();
+  }, upload.single('file'), (req, res, next) => {
+    console.log("Multer middleware executed");
+    next();
+  }, courseController.updateCourse);
+  
 router.delete('/courses/:id', auth, isTeacher, courseController.deleteCourse);
 
 

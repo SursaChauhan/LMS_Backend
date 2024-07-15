@@ -68,8 +68,19 @@ exports.createCourse = async (req, res) => {
 
 exports.updateCourse = async (req, res) => {
     try {
+        const filePath = req.file.path
+        console.log(filePath);
+        console.log("hi from body",req.body)
+        const cloudinaryResult = await uploadOnCloudinary(filePath);
+
+        if (!cloudinaryResult) {
+            return sendErrorResponse(res, 500, 'Failed to upload file to Cloudinary');
+        }
+
         const { title, description } = req.body;
-        const course = await Course.findByIdAndUpdate(req.params.id, { title, description }, { new: true });
+        const ImageURl = cloudinaryResult.secure_url;
+
+        const course = await Course.findByIdAndUpdate(req.params.id, { title, description ,ImageURl}, { new: true });
 
         if (!course) return sendErrorResponse(res, 404, 'Course not found');
 

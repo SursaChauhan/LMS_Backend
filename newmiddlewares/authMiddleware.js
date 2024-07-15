@@ -16,6 +16,7 @@ exports.auth = (req, res, next) => {
 };
 
 exports.isTeacher = (req, res, next) => {
+    console.log("teacher hai");
     if (req.user.role !== 'teacher') return res.status(403).json({ message: 'Access forbidden' });
     next();
 };
